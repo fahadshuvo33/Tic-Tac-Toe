@@ -25,17 +25,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate ( savedInstanceState );
         mBinding = DataBindingUtil.setContentView ( this, R.layout.activity_main );
 
-        //all ids are called by loop . because theirs names are serialwise
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 String idName = "text" + i + j;
                 int resId = getResources ().getIdentifier ( idName, "id", getPackageName () ); //dynamically get id
                 textId[i][j] = findViewById ( resId );
                 textId[i][j].setOnClickListener ( this );
+
             }
         }
     }
-
 
     private void player1Win() {
         mBinding.resultText.setText ( "Player 1 Win" );
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBinding.playerText2.setBackgroundResource ( R.drawable.player2_bg );
         mBinding.playerText2.setTextColor ( Color.BLACK );
     }
-
 
     public void nextPlayer() {
         if (player1turn == 1 && mBinding.resultText.getText ().toString ().trim ().isEmpty ()) {
@@ -132,8 +130,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (field[0][0].equals ( "X" ) && field[1][1].equals ( "X" ) && field[2][2].equals ( "X" )) {
             player1Win ();
             changeBG ( mBinding.text00, mBinding.text11, mBinding.text22 );
+        } else if (field[0][0].equals ( "O" ) && field[1][1].equals ( "O" ) && field[2][2].equals ( "O" )) {
+            player2Win ();
+            changeBG ( mBinding.text00, mBinding.text11, mBinding.text22 );
         } else if (field[0][2].equals ( "O" ) && field[1][1].equals ( "O" ) && field[2][0].equals ( "O" )) {
             player2Win ();
+            changeBG ( mBinding.text02, mBinding.text11, mBinding.text20 );
+        } else if (field[0][2].equals ( "X" ) && field[1][1].equals ( "X" ) && field[2][0].equals ( "X" )) {
+            player1Win ();
             changeBG ( mBinding.text02, mBinding.text11, mBinding.text20 );
         }
     }
@@ -141,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void reset(TextView textView) {
         textView.setText ( "" );
+        textView.setTextColor ( Color.BLACK );
         mBinding.resetBtn.setBackgroundResource ( R.drawable.player2_bg );
         textView.setBackgroundColor ( getResources ().getColor ( R.color.White ) );
     }
@@ -167,7 +172,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        nextPlayer ();
+        mBinding.resetBtn.setBackgroundResource ( R.drawable.reset_bg );
+
         if (v.getId () == mBinding.text00.getId ()) {
             cheakValid ( mBinding.text00 );
         } else if (v.getId () == mBinding.text01.getId ()) {
@@ -186,20 +192,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cheakValid ( mBinding.text21 );
         } else if (v.getId () == mBinding.text22.getId ()) {
             cheakValid ( mBinding.text22 );
-        }
-
-        mBinding.resetBtn.setBackgroundResource ( R.drawable.reset_bg );
-        roundCount++;
-        if (roundCount == 9 && mBinding.resultText.getText ().toString ().trim ().isEmpty ()) {
+        } else if (roundCount == 9 && mBinding.resultText.getText ().toString ().trim ().isEmpty ()) {
             draw ();
         }
-
     }
 
     public void cheakValid(TextView textView) {
         if (textView.getText ().toString ().trim ().isEmpty () && mBinding.resultText.getText ().toString ().trim ().isEmpty ()) {
+            nextPlayer ();
             textView.setText ( "" + inputType );
             cheakToWin ();
+            roundCount++;
         } else if (!mBinding.resultText.getText ().toString ().trim ().isEmpty ()) {
             if (mBinding.resultText.getText ().toString ().equals ( "Player 1 Win" )) {
                 showToast ( "Player 1 is already win, Reset to play again" );
@@ -208,15 +211,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (mBinding.resultText.getText ().toString ().equals ( "Match Draw" )) {
                 showToast ( "Match is Draw, Reset to play again" );
             }
-
         }
     }
 
     public void changeBG(TextView t1, TextView t2, TextView t3) {
         t1.setBackgroundColor ( getResources ().getColor ( R.color.reset ) );
+        t1.setTextColor ( Color.WHITE );
         t2.setBackgroundColor ( getResources ().getColor ( R.color.reset ) );
-        t3.setBackgroundColor ( getResources ().getColor ( R.color.reset ));
-
+        t2.setTextColor ( Color.WHITE );
+        t3.setBackgroundColor ( getResources ().getColor ( R.color.reset ) );
+        t3.setTextColor ( Color.WHITE );
     }
 
     public void showToast(String str) {
