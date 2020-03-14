@@ -192,7 +192,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cheakValid ( mBinding.text21 );
         } else if (v.getId () == mBinding.text22.getId ()) {
             cheakValid ( mBinding.text22 );
-        } else if (roundCount == 9 && mBinding.resultText.getText ().toString ().trim ().isEmpty ()) {
+        }
+        if (roundCount == 9 && mBinding.resultText.getText ().toString ().trim ().isEmpty ()) {
             draw ();
         }
     }
